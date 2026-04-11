@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mydiet/app/widgets/form_field_wiget.dart';
 class AdicionarAlimento extends StatefulWidget {
   const AdicionarAlimento({super.key});
@@ -14,13 +15,13 @@ class _AdicionarAlimentoState extends State<AdicionarAlimento> {
   final _qntdProteina = TextEditingController();
   final _qntdCarboidrato = TextEditingController();
   final _qntdGordura = TextEditingController();
-  String? valorSelecionado;
+
 
   
 
 void criarAlimento(){
   if (_form.currentState!.validate()) {
-      // Salvar a compra
+      // Salvar o alimento
       Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Alimento criado com sucesso!')),
@@ -34,62 +35,80 @@ void criarAlimento(){
       appBar: AppBar(
         title: Text('Adicionar Alimento'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            Form(
-                key: _form,
-                  child: Column(
-                  children: [
-                    CampoTexto(
-                                controller: _nomeAlimento,
-                                label: 'Nome do alimento',
-                                icone: Icons.fastfood,
-                                apenasNumeros: false,
-                                erroVazio: "Digite o nome do alimento",
-                              ),
-                    CampoTexto(
-                      controller: _qntdCalorias, 
-                      label: "Qntd de caloria",
-                      textoSufixo: "Kcal", 
-                      apenasNumeros: true,
-                      erroVazio: "Digite a qntd de calorias!",
-                    ),
-                    CampoTexto(
-                      controller:  _qntdCarboidrato, 
-                      label:"Qntd de carboidratos",
-                      textoSufixo: "g",
-                      apenasNumeros: true,
-                      erroVazio: "Digite a qntd de carboidratos!",
-                      ),
-                    CampoTexto(controller: _qntdGordura, label: "Qntd de gordura",textoSufixo: "g",apenasNumeros: true,erroVazio: "Digite a qntd de gordura",),
-                    CampoTexto(controller: _qntdProteina, label: "Qntd de proteina",textoSufixo: "g",apenasNumeros: true, erroVazio: "Digite a qntd de proteina",),      
-                  ].expand((widget) => [ widget ,const SizedBox(height: 16,)]).toList(),
+      body: Column(
+    children: [
+      Expanded(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(8.0),
+          child: Form(
+            key: _form,
+            child: Column(
+              children: [
+                CampoTexto(
+                  controller: _nomeAlimento,
+                  label: 'Nome do alimento',
+                  icone: FontAwesomeIcons.burger,
+                  apenasNumeros: false,
+                  erroVazio: "Digite o nome do alimento",
                 ),
-              ), 
-              Container(
-              alignment: Alignment.bottomCenter,
-              margin: EdgeInsets.only(top: 24),
-              child: ElevatedButton(
-                onPressed: criarAlimento,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.all(16),
-                      child: Text(
-                        'Criar',
-                        style: TextStyle(fontSize: 20),
-                       ),
-                     ),
-                     Icon(Icons.add),
-                   ]),
-                  ),
-               ), 
-           ], ),
-        ), 
-      );
+                CampoTexto(
+                  controller: _qntdCalorias,
+                  label: "Qntd de caloria",
+                  textoSufixo: "Kcal",
+                  apenasNumeros: true,
+                  erroVazio: "Digite a qntd de calorias!",
+                ),
+                CampoTexto(
+                  controller: _qntdCarboidrato,
+                  label: "Qntd de carboidratos",
+                  textoSufixo: "g",
+                  apenasNumeros: true,
+                  erroVazio: "Digite a qntd de carboidratos!",
+                ),
+                CampoTexto(
+                  controller: _qntdGordura,
+                  label: "Qntd de gordura",
+                  textoSufixo: "g",
+                  apenasNumeros: true,
+                  erroVazio: "Digite a qntd de gordura",
+                ),
+                CampoTexto(
+                  controller: _qntdProteina,
+                  label: "Qntd de proteina",
+                  textoSufixo: "g",
+                  apenasNumeros: true,
+                  erroVazio: "Digite a qntd de proteina",
+                ),
+              ]
+              .expand((w) => [w, const SizedBox(height: 16)])
+              .toList(),
+            ),
+          ),
+        ),
+      ),
+            Padding(
+        padding: const EdgeInsets.all(16),
+        child: ElevatedButton(
+          onPressed: criarAlimento,
+          style: ElevatedButton.styleFrom(
+            minimumSize: Size(double.infinity, 50),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Criar',
+                style: TextStyle(fontSize: 20),
+              ),
+              SizedBox(width: 8),
+              Icon(Icons.add),
+            ],
+          ),
+        ),
+      ),
+    ],
+  ),
+);
   }
 
   @override

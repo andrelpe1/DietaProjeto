@@ -89,14 +89,14 @@ void adicionarRefeicao() {
         children: [
           SpeedDialChild(
             child: Icon(FontAwesomeIcons.appleWhole),
-            label: "Alimento",
+            label: "Adicionar Alimento",
             onTap: () {
               adicionarAlimento();
             },
           ),
           SpeedDialChild(
             child: Icon(Icons.flatware_outlined),
-            label: "Refeição",
+            label: "Criar Refeição",
             onTap: () {
               adicionarRefeicao();
             },
@@ -104,7 +104,7 @@ void adicionarRefeicao() {
         ],
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-   
+
     );
   }
   
