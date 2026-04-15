@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mydiet/app/model/alimento.dart';
 import 'package:mydiet/app/repositories/alimento_repository.dart';
-import 'package:mydiet/app/widgets/form_field_wiget.dart';
+import 'package:mydiet/app/widgets/alimento_card_widget.dart';
+import 'package:provider/provider.dart';
 
 class AdicionarRefeicao extends StatefulWidget {
   const AdicionarRefeicao({super.key});
@@ -11,28 +12,68 @@ class AdicionarRefeicao extends StatefulWidget {
 }
 
 class _AdicionarRefeicaoState extends State<AdicionarRefeicao> {
-  final tabela = AlimentoRepository.tabela;
+  late AlimentoRepository alimentosTabela;
+  DateTime? _dataSelecionada;
+  TimeOfDay? _horaSelecionada;
   String? valorSelecionado;
   final _formRef = GlobalKey<FormState>();
   List<Alimento> selecionados = [];
   final _nomeRefeicao = TextEditingController();
+  String? _erroDataHora;
 
-  void criarRefeicao(){
-  if (_formRef.currentState!.validate() && selecionados.isNotEmpty) {
+  void criarRefeicao() {
+    if (_formRef.currentState!.validate() && selecionados.isNotEmpty) {
       // Salvar o alimento
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Refeicao criada com sucesso!'),
+          backgroundColor: Colors.green,
+        ),
+      );
       Navigator.pop(context);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Refeicao criada com sucesso!')),
-      );
-    }else{
+    } else {
       if (selecionados.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Selecione pelo menos um alimento",style: TextStyle(color: Colors.red),), )
-        ,
-      );
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              "Selecione pelo menos um alimento",
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Colors.red,
+          ),
+        );
       }
     }
-}
+  }
+
+  Future<void> _selecionarData() async {
+    final data = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2100),
+    );
+
+    if (data != null) {
+      setState(() {
+        _dataSelecionada = data;
+      });
+    }
+  }
+
+  Future<void> _selecionarHora() async {
+    final hora = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+
+    if (hora != null) {
+      setState(() {
+        _horaSelecionada = hora;
+      });
+    }
+  }
+
   @override
   void dispose() {
     _nomeRefeicao.dispose();
@@ -41,95 +82,235 @@ class _AdicionarRefeicaoState extends State<AdicionarRefeicao> {
 
   @override
   Widget build(BuildContext context) {
-    
+    alimentosTabela = Provider.of<AlimentoRepository>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('Criar Refeicao'),
       ),
-      body: Column(
-        children: [
-          Form(
-            key: _formRef,
-            child: Padding(
-              padding: const EdgeInsets.all(21),
-              child: Column(
-                children: [
-                  CampoTexto(
-                      controller: _nomeRefeicao, 
-                      label: "Digite o nome da refeição",
-                      apenasNumeros: false,
-                      erroVazio: "Digite um nome para a refeição!",
+      body: SafeArea(
+        child: Column(
+          children: [
+            SingleChildScrollView(
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: 500),
+                  child: Form(
+                    key: _formRef,
+                    child: Padding(
+                      padding: const EdgeInsets.all(21),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          TextFormField(
+                            controller: _nomeRefeicao,
+                            textAlignVertical: TextAlignVertical.center,
+                            decoration: InputDecoration(
+                              labelText: "Digite o nome da refeição",
+                              prefixIcon: Icon(Icons.fastfood),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 16,
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Digite um nome para a refeição!";
+                              }
+                              return null;
+                            },
+                          ),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          Row(
+                            children: [
+                              // DATA
+                              Expanded(
+                                child: InkWell(
+                                  onTap: _selecionarData,
+                                  child: InputDecorator(
+                                    decoration: InputDecoration(
+                                      labelText: "Data",
+                                      prefixIcon: Icon(
+                                        Icons.date_range_rounded,
+                                      ),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(
+                                          20,
+                                        ),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      _dataSelecionada == null
+                                          ? "Selecionar"
+                                          : "${_dataSelecionada!.day}/${_dataSelecionada!.month}/${_dataSelecionada!.year}",
+                                    ),
+                                  ),
+                                ),
+                              ),
+            
+                              SizedBox(width: 10),
+            
+                              // HORA
+                              Expanded(
+                                child: InkWell(
+                                  onTap: _selecionarHora,
+                                  child: InputDecorator(
+                                    decoration: InputDecoration(
+                                      labelText: "Hora",
+                                      prefixIcon: Icon(Icons.timer_sharp),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(
+                                          20,
+                                        ),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      _horaSelecionada == null
+                                          ? "Selecionar"
+                                          : "${_horaSelecionada!.hour.toString().padLeft(2, '0')}:"
+                                                "${_horaSelecionada!.minute.toString().padLeft(2, '0')}",
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+            
+                          DropdownButtonFormField<String>(
+                            initialValue: valorSelecionado,
+                            decoration: InputDecoration(
+                              labelText: "Período da refeição",
+                              prefixIcon: Icon(Icons.restaurant_menu),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 16,
+                              ),
+                            ),
+                            hint: Text("Selecione o período da refeição"),
+                            items: [
+                              DropdownMenuItem(
+                                value: "1",
+                                child: Text("Café da Manhã"),
+                              ),
+                              DropdownMenuItem(
+                                value: "2",
+                                child: Text("Almoço"),
+                              ),
+                              DropdownMenuItem(
+                                value: "3",
+                                child: Text("Lanche da Tarde"),
+                              ),
+                              DropdownMenuItem(
+                                value: "4",
+                                child: Text("Janta"),
+                              ),
+                            ],
+                            onChanged: (value) {
+                              setState(() {
+                                valorSelecionado = value;
+                              });
+                            },
+                            validator: (value) {
+                              if (value == null) {
+                                return "Selecione um período";
+                              }
+                              return null;
+                            },
+                          ),
+                        ],
+                      ),
                     ),
-                    SizedBox(height: 15,),
-                  DropdownButtonFormField(
-                  initialValue: valorSelecionado,
-                  hint: Text("Selecione o período da refeição"),
-                  items: [
-                    DropdownMenuItem(value: "1", child: Text("Café da Manhã"),),
-                    DropdownMenuItem(value: "2", child: Text("Almoço"),),
-                    DropdownMenuItem(value: "3", child: Text("Lanche da Tarde"),),
-                    DropdownMenuItem(value: "4", child: Text("Janta"),),
-                  ],
-                   onChanged: (value) {
-                      setState(() {
-                                  valorSelecionado = value;
-                                  });
-                    },
-                    validator: (value) {
-                          if (value == null) {
-                            return "Selecione um período";
-                          }
-                          return null;
-                        },
                   ),
-                  
-                ],
+                ),
               ),
             ),
-            ),
 
-          Expanded(
-            child: ListView.separated(
-              itemBuilder: (BuildContext content, int alimento){
-                return ListTile(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(15))
-                    ),
-                  leading: selecionados.contains(tabela[alimento])
-                  ? CircleAvatar(
-                    child: Icon((Icons.check)),
-                    ):
-                    Icon(Icons.square_outlined),
-                  title: Text(tabela[alimento].nome, style: TextStyle(fontSize: 25),),
-                  subtitle: Text(
-                      "Gordura: ${tabela[alimento].gordura}g\n"
-                      "Caloria: ${tabela[alimento].caloria}g\n"
-                      "Carboidratos: ${tabela[alimento].carboidratos}g\n"
-                      "Proteína: ${tabela[alimento].proteina}g",
+            Expanded(
+              child: Container(
+                margin: EdgeInsets.all(16),
+                padding: EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.grey.shade400,
+                    width: 1,
                   ),
-                  selected: selecionados.contains(tabela[alimento]),
-                  selectedTileColor: Colors.greenAccent,
-                  onLongPress: (){
-                    setState(() {
-                      (selecionados.contains(tabela[alimento]))
-                          ? selecionados.remove(tabela[alimento])
-                          : selecionados.add(tabela[alimento]);
-                    });
-                  },
-                );
-              },
-              padding: EdgeInsets.all(16),
-              separatorBuilder: (_, _) => Divider(), 
-              itemCount: tabela.length),
-          ),
-        ],
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "ALIMENTOS",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+
+                    SizedBox(height: 10),
+                    Expanded(
+                      child: Consumer<AlimentoRepository>(
+                        builder: (context, alimentosTabela, child) {
+                          return alimentosTabela.listaAlimentos.isEmpty
+                              ? Center(
+                                  child: Text(
+                                    'Nenhum alimento encontrado.\nCrie antes de adicionar uma refeição!',
+                                    textAlign: TextAlign.center,
+                                  ),
+                                )
+                              : ListView.builder(
+                               
+                                  itemCount:
+                                      alimentosTabela.listaAlimentos.length,
+                                  itemBuilder: (_, index) {
+                                    final alimento =
+                                        alimentosTabela.listaAlimentos[index];
+
+                                    final selecionado = selecionados.contains(
+                                      alimento,
+                                    );
+
+                                    return AlimentosCard(
+                                      alimento: alimento,
+                                      key: ValueKey(alimento.nome),
+                                      selecionado: selecionado,
+                                      onTap: () {
+                                        setState(() {
+                                          if (selecionado) {
+                                            selecionados.remove(alimento);
+                                          } else {
+                                            selecionados.add(alimento);
+                                          }
+                                        });
+                                      },
+                                    );
+                                  },
+                                );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
-        
         onPressed: criarRefeicao,
         child: Icon(Icons.add),
-        ),
-         floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }
