@@ -19,6 +19,9 @@ class _AdicionarAlimentoState extends State<AdicionarAlimento> {
   final _qntdProteina = TextEditingController();
   final _qntdCarboidrato = TextEditingController();
   final _qntdGordura = TextEditingController();
+  final _unidadeMedida = TextEditingController();
+  final _valorCota = TextEditingController();
+  bool _mostrarInfosAdicionais = false;
 
   void criarAlimento() {
     if (_form.currentState!.validate()) {
@@ -27,6 +30,8 @@ class _AdicionarAlimentoState extends State<AdicionarAlimento> {
         Alimento(
           nome: _nomeAlimento.text,
           caloria: _qntdCalorias.text,
+          unidadeMedida: _unidadeMedida.text,
+          valorCota: _valorCota.text,
           carboidratos: _qntdCarboidrato.text,
           gordura: _qntdGordura.text,
           proteina: _qntdProteina.text,
@@ -34,7 +39,10 @@ class _AdicionarAlimentoState extends State<AdicionarAlimento> {
       );
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Alimento criado com sucesso!'),backgroundColor: Colors.green),
+        SnackBar(
+          content: Text('Alimento criado com sucesso!'),
+          backgroundColor: Colors.green,
+        ),
       );
       Navigator.pop(context);
     }
@@ -64,33 +72,61 @@ class _AdicionarAlimentoState extends State<AdicionarAlimento> {
                       erroVazio: "Digite o nome do alimento",
                     ),
                     CampoTexto(
+                      controller: _unidadeMedida,
+                      label: "Unidade de medida",
+                      apenasNumeros: false,
+                      erroVazio:
+                          "Digite a unidade de medida EX: Colher de sopa",
+                    ),
+                    CampoTexto(
+                      controller: _valorCota,
+                      label: "Valor da cota",
+                      apenasNumeros: true,
+                      erroVazio: "Digite o valor da cota",
+                    ),
+                    CampoTexto(
                       controller: _qntdCalorias,
                       label: "Qntd de caloria",
                       textoSufixo: "Kcal",
                       apenasNumeros: true,
                       erroVazio: "Digite a qntd de calorias!",
                     ),
-                    CampoTexto(
-                      controller: _qntdCarboidrato,
-                      label: "Qntd de carboidratos",
-                      textoSufixo: "g",
-                      apenasNumeros: true,
-                      erroVazio: "Digite a qntd de carboidratos!",
+                    TextButton(
+                      onPressed: () {
+                        setState(() {
+                          _mostrarInfosAdicionais = !_mostrarInfosAdicionais;
+                        });
+                      },
+                      child: Text(
+                        _mostrarInfosAdicionais
+                            ? 'Ocultar informações adicionais'
+                            : 'Mostrar informações adicionais',
+                      ),
                     ),
-                    CampoTexto(
-                      controller: _qntdGordura,
-                      label: "Qntd de gordura",
-                      textoSufixo: "g",
-                      apenasNumeros: true,
-                      erroVazio: "Digite a qntd de gordura",
-                    ),
-                    CampoTexto(
-                      controller: _qntdProteina,
-                      label: "Qntd de proteina",
-                      textoSufixo: "g",
-                      apenasNumeros: true,
-                      erroVazio: "Digite a qntd de proteina",
-                    ),
+
+                    if (_mostrarInfosAdicionais) ...[
+                      CampoTexto(
+                        controller: _qntdCarboidrato,
+                        label: "Qntd de carboidratos",
+                        textoSufixo: "g",
+                        apenasNumeros: true,
+                      
+                      ),
+                      CampoTexto(
+                        controller: _qntdGordura,
+                        label: "Qntd de gordura",
+                        textoSufixo: "g",
+                        apenasNumeros: true,
+                       
+                      ),
+                      CampoTexto(
+                        controller: _qntdProteina,
+                        label: "Qntd de proteina",
+                        textoSufixo: "g",
+                        apenasNumeros: true,
+                        
+                      ),
+                    ],
                   ].expand((w) => [w, const SizedBox(height: 1)]).toList(),
                 ),
               ),

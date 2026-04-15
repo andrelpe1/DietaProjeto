@@ -4,7 +4,9 @@ class Alimento {
   String gordura;
   String proteina;
   String caloria;
+  String unidadeMedida;
+  String valorCota;
 
-  Alimento({required this.nome,required this.caloria,required this.carboidratos, required this.gordura, required this.proteina});
+  Alimento({required this.nome, required this.caloria,required this.unidadeMedida,required this.valorCota,this.carboidratos="",this.gordura="",this.proteina=""});
 
 }

@@ -16,10 +16,15 @@ class AlimentosCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(15)),
-      ),
+    return Ink(
+  decoration: BoxDecoration(
+    color: selecionado ? Colors.greenAccent : Colors.transparent,
+    borderRadius: BorderRadius.circular(15),
+  ),
+  child: InkWell(
+    borderRadius: BorderRadius.circular(15),
+    onTap: onTap,
+    child: ListTile(
       leading: selecionado
           ? const CircleAvatar(child: Icon(Icons.check))
           : const Icon(Icons.square_outlined),
@@ -33,9 +38,9 @@ class AlimentosCard extends StatelessWidget {
         "Carboidratos: ${alimento.carboidratos}g\n"
         "Proteína: ${alimento.proteina}g",
       ),
-      selected: selecionado,
-      selectedTileColor: Colors.greenAccent,
-      onTap: onTap,
-    );
+    ),
+  ),
+);
+
   }
 }

@@ -7,7 +7,7 @@ class CampoTexto extends StatelessWidget {
   final IconData? icone;
   final String? textoSufixo;
   final bool apenasNumeros;
-  final String erroVazio;
+  final String? erroVazio;
 
   const CampoTexto({
     super.key,
@@ -16,7 +16,7 @@ class CampoTexto extends StatelessWidget {
     this.icone,
     this.textoSufixo,
     required this.apenasNumeros,
-    required this.erroVazio,
+    this.erroVazio,
   });
 
   @override
@@ -56,7 +56,7 @@ class CampoTexto extends StatelessWidget {
               ? TextInputType.number
               : TextInputType.text,
           inputFormatters: apenasNumeros
-              ? [FilteringTextInputFormatter.digitsOnly]
+              ? [FilteringTextInputFormatter.allow(RegExp(r'^\d+\,?\d{0,2}'))]
               : null,
           validator: (value) {
             if (value == null || value.isEmpty) {
