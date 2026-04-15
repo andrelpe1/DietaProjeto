@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mydiet/app/app.dart';
 import 'package:mydiet/app/repositories/alimento_repository.dart';
 import 'package:mydiet/app/repositories/refeicao_repository.dart';
+import 'package:mydiet/app/theme/themeController.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -14,6 +15,9 @@ void main() {
         ChangeNotifierProvider(
           create: (_) => RefeicaoRepository(),
         ),
+        ChangeNotifierProvider(
+          create: (_) => ThemeController()
+          ),
       ],
       child: App(),
     ),

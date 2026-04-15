@@ -36,7 +36,7 @@ class _MainHomeState extends State<MainHome> {
         ),
       ],
     ),
-    const Center(),
+    const MostrarRefeicao(),
     const ConfiguracoesPage(),
     const Center(),
   ];
@@ -50,14 +50,7 @@ class _MainHomeState extends State<MainHome> {
     );
 }
 
- void mostrarRefeicao() {
-      Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => MostrarRefeicao(),
-      ),
-    );
-}
+ 
 
 void adicionarRefeicao() {
   Navigator.push(
@@ -86,7 +79,7 @@ void adicionarRefeicao() {
             children: [
               
               IconButton(onPressed: () { setState(() { _paginaAtual = 0; }); }, icon: const Icon(Icons.home)),
-              IconButton(onPressed: () { mostrarRefeicao();setState(() { _paginaAtual = 1; }); }, icon: const Icon(Icons.food_bank_outlined)),
+              IconButton(onPressed: () { setState(() { _paginaAtual = 1; }); }, icon: const Icon(Icons.food_bank_outlined)),
               const SizedBox(width: 48),
               IconButton(onPressed: () { setState(() { _paginaAtual = 2; }); }, icon: const Icon(Icons.settings)),
               IconButton(onPressed: () { setState(() { _paginaAtual = 3; }); }, icon: const Icon(Icons.person)),

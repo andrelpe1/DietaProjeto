@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mydiet/app/pages/main_homepage.dart';
+import 'package:mydiet/app/theme/themeController.dart';
+import 'package:provider/provider.dart';
 
 
 class App extends StatelessWidget {
@@ -7,15 +9,21 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeController = context.watch<ThemeController>();
     return MaterialApp(
       title: 'MyDiet',
       debugShowCheckedModeBanner: false,
+      themeMode: themeController.themeMode,
+
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.greenAccent
+        brightness: Brightness.light,
+        primarySwatch: Colors.blue,
         ),
+        darkTheme: ThemeData(
+        brightness: Brightness.dark,
       ),
-      home: MainHome(),
-    );
+          home: MainHome(),
+      );
+  
   }
 }
