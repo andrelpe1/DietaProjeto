@@ -17,6 +17,7 @@ class CampoTexto extends StatelessWidget {
     this.textoSufixo,
     required this.apenasNumeros,
     this.erroVazio,
+
   });
 
   @override
@@ -27,7 +28,7 @@ class CampoTexto extends StatelessWidget {
         height: 60, // 👈 controla altura
         child: TextFormField(
           controller: controller,
-          style: const TextStyle(fontSize: 18), // 👈 texto um pouco menor
+          style: const TextStyle(fontSize: 18),
           decoration: InputDecoration(
             labelText: label,
             prefixIcon: icone != null ? Icon(icone) : null,
