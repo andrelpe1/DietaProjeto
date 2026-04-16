@@ -4,7 +4,6 @@ import 'package:mydiet/app/model/refeicao.dart';
 import 'package:mydiet/app/repositories/refeicao_repository.dart';
 import 'package:mydiet/app/widgets/refeicao_card_widget.dart';
 import 'package:provider/provider.dart';
-import 'dart:collection';
 
 class MostrarRefeicao extends StatefulWidget {
   const MostrarRefeicao({super.key});
@@ -70,44 +69,35 @@ class _MostrarRefeicaoState extends State<MostrarRefeicao> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Minhas Refeições"),
+  return Column(
+  children: [
+    SizedBox(
+      height: 150,
+      child: CalendarWeek(
+        controller: _controller,
+        showMonth: true,
+        minDate: DateTime(2020),
+        maxDate: DateTime(2100),
+        onDatePressed: (date) {
+          context.read<RefeicaoRepository>().setDataSelecionada(date);
+        },
       ),
-      body: Column(
-        children: [
-          SizedBox(
-            height: 150,
-            child: CalendarWeek(
-              controller: _controller,
-              showMonth: true,
-              minDate: DateTime(2020),
-              maxDate: DateTime(2100),
-              onDatePressed: (date) {
-                context.read<RefeicaoRepository>().setDataSelecionada(date);
-              },
-            ),
-          ),
+    ),
 
-          // resto da tela
-          Expanded(
-            child: Consumer<RefeicaoRepository>(
-              builder: (context, refeicaoTabela, child) {
-                return refeicaoTabela.refeicoesDoDia.isEmpty
-                    ? Center(
-                        child: Text(
-                          'Nenhuma Refeicao encontrada.',
-                          textAlign: TextAlign.center,
-                        ),
-                      )
-                    : ListView(
-                        children: _buildRefeicoesAgrupadas(refeicaoTabela),
-                      );
-              },
-            ),
-          ),
-        ],
+    Expanded(
+      child: Consumer<RefeicaoRepository>(
+        builder: (context, refeicaoTabela, child) {
+          return refeicaoTabela.refeicoesDoDia.isEmpty
+              ? const Center(
+                  child: Text('Nenhuma Refeicao encontrada.'),
+                )
+              : ListView(
+                  children: _buildRefeicoesAgrupadas(refeicaoTabela),
+                );
+        },
       ),
-    );
-  }
+    ),
+  ],
+);
+}
 }
