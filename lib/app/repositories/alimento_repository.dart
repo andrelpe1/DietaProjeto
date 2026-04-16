@@ -16,6 +16,20 @@ class AlimentoRepository extends ChangeNotifier {
     notifyListeners();
   }
 
+  AlimentoRepository(){
+    _listaAlimentos.addAll(
+      [
+      Alimento(nome: "Arroz", caloria: "7", unidadeMedida: "Colher de sopa", valorCota: "23"),
+      Alimento(nome: "Feijão", caloria: "4", unidadeMedida: "gramas", valorCota: "1"),
+      Alimento(nome: "Bife", caloria: "10", unidadeMedida: "gramas", valorCota: "9"),
+      Alimento(nome: "Pão", caloria: "78", unidadeMedida: "fatia", valorCota: "11"),
+      Alimento(nome: "Sopa", caloria: "13", unidadeMedida: "gramas", valorCota: "93"),
+      Alimento(nome: "Biscoito", caloria: "32", unidadeMedida: "gramas", valorCota: "79"),
+      ]
+    );
+    notifyListeners();
+  }
+
   void saveAlimento(Alimento alimento) {
     _listaAlimentos.add(alimento);
     notifyListeners();
