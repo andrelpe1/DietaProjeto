@@ -12,8 +12,10 @@ class _ConfiguracoesPageState extends State<ConfiguracoesPage> {
   @override
   Widget build(BuildContext context) {
     final themeController = context.watch<ThemeController>();
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           const SizedBox(height: 60),
@@ -26,31 +28,16 @@ class _ConfiguracoesPageState extends State<ConfiguracoesPage> {
                   height: 100,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    border: Border.all(
-                      color: Theme.of(context).cardColor,
-                      width: 3,
-                    ),
+                    border: Border.all(color: colorScheme.outline, width: 3),
                   ),
                   child: ClipOval(
-                    child: Container(
-                      color: Theme.of(context).textTheme.bodyMedium?.color,
-                      child: Center(
-                        child: Image.asset(
-                          'assets/mydiet.png',
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
+                    child: Image.asset('assets/mydiet.png', fit: BoxFit.cover),
                   ),
                 ),
                 const SizedBox(height: 12),
-                const Text(
+                Text(
                   'MyDiet',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black87,
-                  ),
+                  style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w500),
                 ),
               ],
             ),
@@ -61,7 +48,7 @@ class _ConfiguracoesPageState extends State<ConfiguracoesPage> {
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 16),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: colorScheme.surface,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Column(
@@ -69,49 +56,61 @@ class _ConfiguracoesPageState extends State<ConfiguracoesPage> {
                 ListTile(
                   leading: Icon(
                     themeController.isDark ? Icons.dark_mode : Icons.light_mode,
-                    color: Colors.black87,
+                    color: colorScheme.onSurface,
                   ),
-                  title: const Text('Tema'),
+                  title: Text('Tema', style: TextStyle(color: colorScheme.onSurface)),
                   trailing: Switch(
                     value: themeController.isDark,
-                    onChanged: (valor) {
-                      context.read<ThemeController>().toggleTheme(valor);
-                    },
+                    onChanged: (valor) => context.read<ThemeController>().toggleTheme(valor),
                   ),
                 ),
 
-                const Divider(height: 1, indent: 16, endIndent: 16),
+                Divider(height: 1, indent: 16, endIndent: 16, color: colorScheme.outlineVariant),
 
                 ListTile(
-                  leading: const Icon(
-                    Icons.quiz_outlined,
-                    color: Colors.black87,
-                  ),
-                  title: const Text('FAQ'),
+                  leading: Icon(Icons.quiz_outlined, color: colorScheme.onSurface),
+                  title: Text('FAQ', style: TextStyle(color: colorScheme.onSurface)),
                   onTap: () {
-                    // TODO: implementar FAQ
+                    showDialog(
+                      context: context,
+                      builder: (_) => AlertDialog(
+                        title: Text('FAQ'),
+                        content: Text('Este aplicativo foi destinado a ajudar a mãe de um amigo nosso que possui uma dieta específica a ser seguida'),
+                        actions: [
+                          TextButton(onPressed: () => Navigator.pop(context), child: Text('Fechar')),
+                        ],
+                      ),
+                    );
                   },
                 ),
 
-                const Divider(height: 1, indent: 16, endIndent: 16),
+                Divider(height: 1, indent: 16, endIndent: 16, color: colorScheme.outlineVariant),
 
                 ListTile(
-                  leading: const Icon(
-                    Icons.help_outline,
-                    color: Colors.black87,
-                  ),
-                  title: const Text('Entre em contato conosco'),
+                  leading: Icon(Icons.help_outline, color: colorScheme.onSurface),
+                  title: Text('Entre em contato conosco', style: TextStyle(color: colorScheme.onSurface)),
                   onTap: () {
-                    // TODO: implementar contato
+                    showDialog(
+                      context: context,
+                      builder: (_) => AlertDialog(
+                        title: Text('Entre em contato conosco'),
+                        content: Text('João Altevir: (42) 99953-4638'),
+                        actions: [
+                          TextButton(onPressed: () => Navigator.pop(context), child: Text('Fechar')),
+                        ],
+                      ),
+                    );
                   },
                 ),
               ],
             ),
           ),
 
-          Spacer(),
+          const Spacer(),
         ],
       ),
     );
   }
 }
+
+// tem que fazer o contato e o faq n esquece ENZO
